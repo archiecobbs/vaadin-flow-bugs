@@ -31,6 +31,10 @@ public class DateRangeField extends CustomField<DateRange> {
         layout.add(this.startDateField);
         layout.add(new Text("-"));
         layout.add(this.endDateField);
+
+        // When any sub-field changes, recalculate this field's value
+        this.startDateField.addValueChangeListener(e -> this.updateValue());
+        this.endDateField.addValueChangeListener(e -> this.updateValue());
     }
 
 // CustomField
