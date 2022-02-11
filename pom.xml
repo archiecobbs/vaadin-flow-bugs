@@ -6,11 +6,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
     <groupId>org.dellroad</groupId>
-    <artifactId>dellroad-stuff-vaadin22-demo</artifactId>
-    <version>2.5.0-SNAPSHOT</version>
-    <name>DellRoad Stuff Vaadin Demo Classes</name>
+    <artifactId>vaadinbug</artifactId>
+    <version>1.0.0</version>
+    <name>Vaadin Bug Demo</name>
     <packaging>war</packaging>
-    <description>Demonstration of DellRoad Stuff classes for Vaadin.</description>
+    <description>Demonstration of Vaadin Bug.</description>
     <distributionManagement>
         <site>
             <id>${project.artifactId}-site</id>
