@@ -366,7 +366,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Vaadin plugin. Horribly (un)documented. -->
+            <!-- Vaadin plugin -->
             <plugin>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-maven-plugin</artifactId>
