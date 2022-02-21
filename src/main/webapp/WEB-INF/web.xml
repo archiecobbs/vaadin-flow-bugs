@@ -53,10 +53,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>VaadinBugServlet</servlet-name>
-        <url-pattern>/demo</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>VaadinBugServlet</servlet-name>
         <url-pattern>/demo/*</url-pattern>
     </servlet-mapping>
 
