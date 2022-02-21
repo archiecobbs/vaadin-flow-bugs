@@ -6,4 +6,4 @@ Each bug is committed onto a different branch of this repository.
 How to run this:
 
 1. Run `mvn package jetty:run`
-1. Point browser at `http://localhost:8090/demo`
+1. Point browser at `http://localhost:8090/demo/` (note trailing slash)
