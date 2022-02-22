@@ -6,8 +6,18 @@
 package vaadinbug.model;
 
 public enum Color {
-    RED,
+    BLUE,
     GREEN,
-    YELLOW,
-    BLUE;
+    INDIGO,
+    MAUVE,
+    ORANGE,
+    PURPLE,
+    RED,
+    TAN,
+    YELLOW;
+
+    @Override
+    public String toString() {
+        return this.name().substring(0, 1) + this.name().substring(1).toLowerCase();
+    }
 }

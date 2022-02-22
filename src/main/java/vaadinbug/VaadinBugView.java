@@ -9,7 +9,9 @@ import com.google.common.base.Preconditions;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
@@ -21,10 +23,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.selection.MultiSelect;
 import com.vaadin.flow.dom.ElementConstants;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -33,8 +37,8 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import vaadinbug.field.VehicleField;
-import vaadinbug.model.Contract;
+import vaadinbug.model.Color;
+import vaadinbug.model.Person;
 
 @PreserveOnRefresh
 @Route("")
@@ -43,7 +47,7 @@ public class VaadinBugView extends VerticalLayout {
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private BeanValidationBinder<Contract> binder;
+    private BeanValidationBinder<Person> binder;
     private Notification errorNotification;
 
     public VaadinBugView() {
@@ -51,30 +55,42 @@ public class VaadinBugView extends VerticalLayout {
         // Add title
         this.add(new Text("Vaadin Bug Demo"));
 
-        // Configure fields
+        // Name field
         final TextField nameField = new TextField();
         nameField.setPlaceholder("Name...");
-        nameField.setMaxLength(Contract.NAME_MAX_LENGTH);
-        nameField.setPattern(Contract.NAME_PATTERN);
         nameField.setRequired(true);
         nameField.setRequiredIndicatorVisible(true);
 
-        final VehicleField vehicleField = new VehicleField();
+        // Favorite colors field
+        final Grid<Color> favoriteColorsGrid = new Grid<>(Color.class, false);
+        favoriteColorsGrid.setItems(EnumSet.allOf(Color.class));
+        favoriteColorsGrid.addColumn(Color::toString);
+        favoriteColorsGrid.setSelectionMode(Grid.SelectionMode.MULTI);
+        favoriteColorsGrid.setWidth("200px");
+        favoriteColorsGrid.setHeight("150px");
+        final MultiSelect<Grid<Color>, Color> favoriteColorsField = favoriteColorsGrid.asMultiSelect();
+
+        // Birthday field
+        final DatePicker birthdayField = new DatePicker();
+        birthdayField.setRequired(true);
+        birthdayField.setRequiredIndicatorVisible(true);
 
         // Setup binder
-        this.binder = new BeanValidationBinder<>(Contract.class);
+        this.binder = new BeanValidationBinder<>(Person.class);
         this.binder.forField(nameField)
           .withNullRepresentation("")
           .bind("name");
-        this.binder.forField(vehicleField)
-          .withValidator(vehicleField::validate)
-          .bind("vehicle");
+        this.binder.forField(favoriteColorsField)
+          .bind("favoriteColors");
+        this.binder.forField(birthdayField)
+          .bind("birthday");
 
         // Build form
         final FormLayout formLayout = new FormLayout();
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("1px", 1, FormLayout.ResponsiveStep.LabelsPosition.ASIDE));
-        formLayout.addFormItem(nameField, "Name");
-        formLayout.addFormItem(vehicleField, "Vehicle");
+        formLayout.addFormItem(nameField, "Name:");
+        formLayout.addFormItem(favoriteColorsGrid, "Favorite Colors:");
+        formLayout.addFormItem(birthdayField, "Birthday:");
         this.add(formLayout);
 
         // Add buttons
@@ -87,13 +103,13 @@ public class VaadinBugView extends VerticalLayout {
     private void resetForm() {
         this.log.info("VaadinBugView: form reset");
         this.resetErrorNotification();
-        this.binder.readBean(new Contract());
+        this.binder.readBean(new Person());
     }
 
     private void submitForm() {
         this.log.info("VaadinBugView: form submitted");
         this.resetErrorNotification();
-        final Contract contract = new Contract();
+        final Person contract = new Person();
         try {
             this.binder.writeBean(contract);
         } catch (ValidationException e) {
