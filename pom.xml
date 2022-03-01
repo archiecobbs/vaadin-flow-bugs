@@ -37,7 +37,7 @@
         <aspectj.maven-plugin.version>1.11</aspectj.maven-plugin.version>
         <aspectj.version>[1.8.13,1.9)</aspectj.version>
         <dellroad-stuff.version>2.5.0-SNAPSHOT</dellroad-stuff.version>
-        <guava.version>31.0.1-jre</guava.version>
+        <guava.version>31.1-jre</guava.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <javax.el.version>3.0.1-b11</javax.el.version>
         <jetty.maven.plugin.version>9.4.45.v20220203</jetty.maven.plugin.version>
@@ -53,7 +53,7 @@
         <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
         <vaadin.version.major>22</vaadin.version.major>
         <vaadin.version.minor>0</vaadin.version.minor>
-        <vaadin.version.patch>5</vaadin.version.patch>
+        <vaadin.version.patch>6</vaadin.version.patch>
         <vaadin.version>${vaadin.version.major}.${vaadin.version.minor}.${vaadin.version.patch}</vaadin.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
 
