@@ -3,6 +3,8 @@ A place to put code that demonstrates bugs in Vaadin Flow
 
 Each bug is committed onto a different branch of this repository.
 
+**This bug is filed here: https://github.com/vaadin/flow-components/issues/2902**
+
 How to run this:
 
 1. Run `mvn package jetty:run`
