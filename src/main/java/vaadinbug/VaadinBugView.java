@@ -27,16 +27,14 @@ import com.vaadin.flow.router.Route;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import vaadinbug.field.DateRangeField;
+import vaadinbug.field.VehicleField;
 import vaadinbug.model.Contract;
-import vaadinbug.model.DateRange;
 
 @PreserveOnRefresh
 @Route("")
@@ -61,20 +59,22 @@ public class VaadinBugView extends VerticalLayout {
         nameField.setRequired(true);
         nameField.setRequiredIndicatorVisible(true);
 
-        final DateRangeField termField = new DateRangeField();
+        final VehicleField vehicleField = new VehicleField();
 
         // Setup binder
         this.binder = new BeanValidationBinder<>(Contract.class);
-        this.binder.forField(nameField).bind("name");
-        this.binder.forField(termField)
-          .withValidator((dr, ctx) -> Optional.ofNullable(dr).map(DateRange::validate).orElseGet(ValidationResult::ok))
-          .bind("term");
+        this.binder.forField(nameField)
+          .withNullRepresentation("")
+          .bind("name");
+        this.binder.forField(vehicleField)
+          .withValidator(vehicleField::validate)
+          .bind("vehicle");
 
         // Build form
         final FormLayout formLayout = new FormLayout();
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("1px", 1, FormLayout.ResponsiveStep.LabelsPosition.ASIDE));
         formLayout.addFormItem(nameField, "Name");
-        formLayout.addFormItem(termField, "Term");
+        formLayout.addFormItem(vehicleField, "Vehicle");
         this.add(formLayout);
 
         // Add buttons
