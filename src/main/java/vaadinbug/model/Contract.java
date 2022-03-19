@@ -16,7 +16,7 @@ public class Contract {
     public static final int NAME_MAX_LENGTH = 12;
 
     private String name;
-    private Vehicle vehicle;
+    private DateRange term;
 
     @NotNull(message = "Name is required")
     @Pattern(regexp = NAME_PATTERN, message = "Alphabetic words only")
@@ -28,19 +28,19 @@ public class Contract {
         this.name = name;
     }
 
-    @NotNull(message = "Vehicle is required")
+    @NotNull(message = "Contract is required")
     @Valid
-    public Vehicle getVehicle() {
-        return this.vehicle;
+    public DateRange getTerm() {
+        return this.term;
     }
-    public void setVehicle(final Vehicle vehicle) {
-        this.vehicle = vehicle;
+    public void setTerm(final DateRange term) {
+        this.term = term;
     }
 
 // Object
 
     @Override
     public String toString() {
-        return String.format("Contract[name=\"%s\",vehicle=%s]", this.name, this.vehicle);
+        return String.format("Person[name=\"%s\",term=%s]", this.name, this.term);
     }
 }
