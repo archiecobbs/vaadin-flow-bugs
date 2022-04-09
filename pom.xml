@@ -49,7 +49,7 @@
         <maven.war.plugin.version>3.3.2</maven.war.plugin.version>
         <servlet-api.version>4.0.1</servlet-api.version>
         <slf4j.version>1.7.35</slf4j.version>
-        <spring.version>5.3.17</spring.version>
+        <spring.version>5.3.18</spring.version>
         <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
         <vaadin.version.major>22</vaadin.version.major>
         <vaadin.version.minor>0</vaadin.version.minor>
