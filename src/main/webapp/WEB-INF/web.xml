@@ -16,7 +16,7 @@
     <!-- Vaadin servlet -->
     <servlet>
         <servlet-name>VaadinBugServlet</servlet-name>
-        <servlet-class>org.dellroad.stuff.vaadin22.servlet.SimpleSpringServlet</servlet-class>
+        <servlet-class>org.dellroad.stuff.vaadin23.servlet.SimpleSpringServlet</servlet-class>
         <init-param>
             <param-name>productionMode</param-name>
             <param-value>true</param-value>
