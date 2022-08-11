@@ -33,6 +33,7 @@
         <checkstyle.config.location>src/checkstyle/checkstyle.xml</checkstyle.config.location>
 
         <!-- Dependency versions -->
+        <ace.addon.version>3.3.3</ace.addon.version>
         <aspectj.maven-plugin.version>1.14.0</aspectj.maven-plugin.version>
         <aspectj.version>1.9.7</aspectj.version>
         <dellroad-stuff.version>2.5.2</dellroad-stuff.version>
@@ -58,6 +59,22 @@
     </properties>
 
     <repositories>
+
+        <!-- Vaadin Directory -->
+        <repository>
+            <id>vaadin-addons</id>
+            <name>Vaadin Add-Ons</name>
+            <url>https://maven.vaadin.com/vaadin-addons</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>interval:259200</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
         <repository>
             <id>snapshots-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -98,6 +115,13 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring</artifactId>
+        </dependency>
+
+        <!-- Ace add-on -->
+        <dependency>
+            <groupId>de.f0rce</groupId>
+            <artifactId>ace</artifactId>
+            <version>${ace.addon.version}</version>
         </dependency>
 
         <!-- Spring -->

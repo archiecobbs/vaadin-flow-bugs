@@ -25,6 +25,10 @@ import com.vaadin.flow.dom.ElementConstants;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 
+import de.f0rce.ace.AceEditor;
+import de.f0rce.ace.enums.AceMode;
+import de.f0rce.ace.enums.AceTheme;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -60,6 +64,13 @@ public class VaadinBugView extends VerticalLayout {
         nameField.setRequiredIndicatorVisible(true);
 
         final VehicleField vehicleField = new VehicleField();
+
+        final AceEditor ace = new AceEditor();
+        ace.setMode(AceMode.javascript);
+        ace.setTheme(AceTheme.chrome);
+        ace.setShowPrintMargin(false);
+        ace.setValue("\"use strict\";\nvar x = function (y) {\n  return true;\n};\n");
+        this.add(ace);
 
         // Setup binder
         this.binder = new BeanValidationBinder<>(Contract.class);
