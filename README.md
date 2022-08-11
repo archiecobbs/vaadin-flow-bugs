@@ -4,7 +4,7 @@ Demonstration for [Vaadin Flow Bug #14239](https://github.com/vaadin/flow/issues
 How to run this:
 
 1. Run `mvn package jetty:run`
-1. Point browser at `http://localhost:8090/demo/` (note trailing slash)
+1. Point browser at `http://localhost:8090/demo/demo/` (note trailing slash)
 
 To apply the partial workaround:
 
