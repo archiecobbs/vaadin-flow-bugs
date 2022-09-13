@@ -12,5 +12,5 @@ rm -rf \
   pnpmfile.js \
   tsconfig.json \
   types.d.ts \
-  webpack.config.js \
-  webpack.generated.js
+  vite.config.ts \
+  vite.generated.ts
