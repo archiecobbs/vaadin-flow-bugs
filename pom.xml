@@ -269,7 +269,7 @@
                         <port>${jetty.http.port}</port>
                     </httpConnector>
                     <webApp>
-                        <contextPath>/demo</contextPath>
+                        <contextPath>/webapps</contextPath>
                     </webApp>
                 </configuration>
             </plugin>
