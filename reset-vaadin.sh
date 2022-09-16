@@ -9,7 +9,8 @@ rm -rf \
   node_modules \
   package-lock.json \
   package.json \
+  pnpmfile.js \
   tsconfig.json \
   types.d.ts \
-  webpack.config.js \
-  webpack.generated.js
+  vite.config.ts \
+  vite.generated.ts

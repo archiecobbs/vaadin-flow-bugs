@@ -6,8 +6,12 @@ How to run this:
 1. Run `mvn package jetty:run`
 1. Point browser at `http://localhost:8090/demo/demo/` (note trailing slash)
 
-To apply the partial workaround:
+You will see that the Javascript highlighting add-on is not working.
 
-1. Edit `src/main/webapp/WEB-INF/web.xml` and uncomment the stuff under "(PARTIAL) WORKAROUND FOR BUG #14239"
+In Firefox the inspector console will show the underlying errors:
 
-But then you'll see that the add-on still doesn't work.
+```
+Loading failed for the <script> with source “http://localhost:8090/demo/demo/ace-builds/src-min-noconflict/theme-chrome.js”.
+Loading failed for the <script> with source “http://localhost:8090/demo/demo/ace-builds/src-min-noconflict/mode-javascript.js”.
+```
+
