@@ -5,6 +5,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.dellroad</groupId>
+        <artifactId>dellroad-dependencies</artifactId>
+        <version>3.2.2.0</version>
+    </parent>
     <groupId>org.dellroad</groupId>
     <artifactId>vaadinbug</artifactId>
     <version>1.0.0</version>
@@ -21,38 +26,22 @@
 
         <!-- Basic stuff -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>11</jdk.version>
+        <jdk.version>17</jdk.version>
 
         <!-- Enable to build in production mode -->
         <!--<vaadin.productionMode>true</vaadin.productionMode>-->
 
         <!-- What port to run Jetty on -->
-        <jetty.http.port>8090</jetty.http.port>
+        <jetty.http.port>8081</jetty.http.port>
 
         <!-- Other stuff -->
         <checkstyle.config.location>src/checkstyle/checkstyle.xml</checkstyle.config.location>
 
         <!-- Dependency versions -->
-        <aspectj.maven-plugin.version>1.14.0</aspectj.maven-plugin.version>
-        <aspectj.version>1.9.7</aspectj.version>
-        <dellroad-stuff.version>2.5.4</dellroad-stuff.version>
-        <extra.enforcer.rules.version>1.5.1</extra.enforcer.rules.version>
-        <guava.version>31.1-jre</guava.version>
-        <hibernate-validator.version>6.2.3.Final</hibernate-validator.version>
-        <javax.el.version>3.0.1-b11</javax.el.version>
-        <jetty.maven.plugin.version>9.4.45.v20220203</jetty.maven.plugin.version>
-        <maven.checkstyle.plugin.version>3.0.0</maven.checkstyle.plugin.version>
-        <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-        <maven.enforcer.plugin.version>3.0.0</maven.enforcer.plugin.version>
-        <maven.resources.plugin.version>3.2.0</maven.resources.plugin.version>
-        <maven.war.plugin.version>3.3.2</maven.war.plugin.version>
-        <servlet-api.version>4.0.1</servlet-api.version>
-        <slf4j.version>1.7.35</slf4j.version>
-        <spring.version>5.3.20</spring.version>
-        <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
-        <vaadin.version.major>23</vaadin.version.major>
+        <jetty-maven-plugin.version>9.4.45.v20220203</jetty-maven-plugin.version>
+        <vaadin.version.major>24</vaadin.version.major>
         <vaadin.version.minor>3</vaadin.version.minor>
-        <vaadin.version.patch>0</vaadin.version.patch>
+        <vaadin.version.patch>5</vaadin.version.patch>
         <vaadin.version>${vaadin.version.major}.${vaadin.version.minor}.${vaadin.version.patch}</vaadin.version>
 
     </properties>
@@ -76,25 +65,7 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-core</artifactId>
-            <exclusions>
-            <!--
-                <exclusion>
-                    <groupId>com.vaadin</groupId>
-                    <artifactId>vaadin-dev-server</artifactId>
-                </exclusion>
-            -->
-                <exclusion>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-    <!--
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>flow-server-production-mode</artifactId>
-        </dependency>
-    -->
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring</artifactId>
@@ -104,22 +75,18 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
             <exclusions>
                 <exclusion>
                     <!-- Conflicts with commons-logging dependency of hibernate-validator, httpclient -->
@@ -131,66 +98,44 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <!-- Servlet API -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet-api.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Validation -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>${javax.el.version}</version>
         </dependency>
 
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-reload4j</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
 
         <!-- DellRoad Stuff -->
         <dependency>
             <groupId>org.dellroad</groupId>
             <artifactId>dellroad-stuff-main</artifactId>
-            <version>${dellroad-stuff.version}</version>
         </dependency>
         <dependency>
             <groupId>org.dellroad</groupId>
             <artifactId>dellroad-stuff-spring</artifactId>
-            <version>${dellroad-stuff.version}</version>
         </dependency>
         <dependency>
             <groupId>org.dellroad</groupId>
-            <artifactId>dellroad-stuff-vaadin23</artifactId>
-            <version>${dellroad-stuff.version}</version>
+            <artifactId>dellroad-stuff-vaadin${vaadin.version.major}</artifactId>
         </dependency>
 
         <!-- Misc utility -->
@@ -202,7 +147,6 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
         </dependency>
 
     </dependencies>
@@ -238,7 +182,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty.maven.plugin.version}</version>
+                <version>${jetty-maven-plugin.version}</version>
                  <configuration>
                     <httpConnector>
                         <host>localhost</host>
@@ -251,12 +195,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven.enforcer.plugin.version}</version>
+                <version>${maven-enforcer-plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>extra-enforcer-rules</artifactId>
-                        <version>${extra.enforcer.rules.version}</version>
+                        <version>${extra-enforcer-rules.version}</version>
                     </dependency>
                 </dependencies>
                 <executions>
@@ -297,7 +241,9 @@
 
                                 <!-- Other rules -->
                                 <reactorModuleConvergence/>
-                                <requireUpperBoundDeps/>
+                            <!--
+                                <requireUpperBoundDeps/>        See https://github.com/vaadin/spring/issues/1070
+                            -->
 
                             </rules>
                         </configuration>
@@ -309,14 +255,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resources.plugin.version}</version>
+                <version>${maven-resources-plugin.version}</version>
             </plugin>
 
             <!-- Compile -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin.version}</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
@@ -334,7 +280,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>${aspectj.maven-plugin.version}</version>
+                <version>${aspectj-maven-plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.aspectj</groupId>
@@ -378,7 +324,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${maven.war.plugin.version}</version>
+                <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <packagingExcludes>WEB-INF/classes/builddef.lst</packagingExcludes> <!-- Leftover from aspectj compile -->
                 </configuration>
@@ -388,7 +334,7 @@
             <plugin>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-maven-plugin</artifactId>
-                <version>${vaadin.plugin.version}</version>
+                <version>${vaadin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -404,7 +350,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven.checkstyle.plugin.version}</version>
+                <version>${maven-checkstyle-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>checkstyle_verify</id>

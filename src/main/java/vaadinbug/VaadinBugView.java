@@ -150,7 +150,7 @@ public class VaadinBugView extends VerticalLayout {
         topRow.add(new Div(new Text(message)));
         final Button closeButton = new Button(new Icon("lumo", "cross"), e -> notification.close());
         closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-        closeButton.getElement().setAttribute(ElementConstants.ARIA_LABEL_PROPERTY_NAME, "Close");
+        closeButton.getElement().setAttribute(ElementConstants.ARIA_LABEL_ATTRIBUTE_NAME, "Close");
         topRow.add(closeButton);
         notification.add(topRow);
 
