@@ -5,16 +5,20 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+    <!-- Inherit from Spring Boot parent -->
     <parent>
-        <groupId>org.dellroad</groupId>
-        <artifactId>dellroad-dependencies</artifactId>
-        <version>3.2.2.0</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.2</version>
+        <relativePath/>
     </parent>
+
     <groupId>org.dellroad</groupId>
     <artifactId>vaadinbug</artifactId>
     <version>1.0.0</version>
     <name>Vaadin Bug Demo</name>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <description>Demonstration of Vaadin Bug.</description>
     <distributionManagement>
         <site>
@@ -25,39 +29,26 @@
     <properties>
 
         <!-- Basic stuff -->
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>17</jdk.version>
-
-        <!-- Enable to build in production mode -->
-        <!--<vaadin.productionMode>true</vaadin.productionMode>-->
-
-        <!-- What port to run Jetty on -->
-        <jetty.http.port>8081</jetty.http.port>
-
-        <!-- Other stuff -->
-        <checkstyle.config.location>src/checkstyle/checkstyle.xml</checkstyle.config.location>
 
         <!-- Dependency versions -->
-        <jetty-maven-plugin.version>9.4.45.v20220203</jetty-maven-plugin.version>
-        <vaadin.version.major>24</vaadin.version.major>
-        <vaadin.version.minor>3</vaadin.version.minor>
-        <vaadin.version.patch>5</vaadin.version.patch>
-        <vaadin.version>${vaadin.version.major}.${vaadin.version.minor}.${vaadin.version.patch}</vaadin.version>
+        <dellroad-dependencies.version>${project.parent.version}.0</dellroad-dependencies.version>
+        <vaadin.version>24.3.5</vaadin.version>
+        <line-awesome.version>1.1.0</line-awesome.version>
+        <guava.version>33.0.0-jre</guava.version>
+
+        <!--
+            Other plugin dependency versions copied from dellroad-dependencies, as
+            there's currently no way to do a BOM import of plugin dependency versions.
+            See https://issues.apache.org/jira/browse/MNG-5588
+        -->
+        <aspectj-maven-plugin.version>1.14.0</aspectj-maven-plugin.version>
+        <extra-enforcer-rules.version>1.5.1</extra-enforcer-rules.version>
+        <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
+        <spotbugs-maven-plugin.version>4.8.3.1</spotbugs-maven-plugin.version>
 
     </properties>
-
-    <repositories>
-        <repository>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <dependencies>
 
@@ -65,10 +56,35 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.vaadin</groupId>
+                    <artifactId>vaadin-dev</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-spring</artifactId>
+            <artifactId>vaadin-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-annotations-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.parttio</groupId>
+            <artifactId>line-awesome</artifactId>
+            <version>${line-awesome.version}</version>
         </dependency>
 
         <!-- Spring -->
@@ -87,13 +103,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <!-- Conflicts with commons-logging dependency of hibernate-validator, httpclient -->
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-jcl</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -108,20 +117,51 @@
             <artifactId>spring-web</artifactId>
         </dependency>
 
-        <!-- Validation -->
+        <!-- Spring Boot Starters -->
         <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Logging -->
+        <!--
+            Logging
+
+            Our strategy:
+                - LOG4J does the actual logging
+                - SLF4J is the preferred API we use
+                - Route java-commons-logging API through SLF4J
+                    - Done for us by spring-jcl
+                - Exclude all logback stuff
+        -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-reload4j</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
         </dependency>
 
         <!-- DellRoad Stuff -->
@@ -135,15 +175,16 @@
         </dependency>
         <dependency>
             <groupId>org.dellroad</groupId>
-            <artifactId>dellroad-stuff-vaadin${vaadin.version.major}</artifactId>
+            <artifactId>dellroad-stuff-vaadin24</artifactId>
         </dependency>
 
-        <!-- Misc utility -->
+        <!-- Guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
+
+        <!-- AspectJ -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
@@ -151,9 +192,17 @@
 
     </dependencies>
 
-    <!-- Import vaadin-bom and vaadin-spring-bom which define all the Vaadin dependencies -->
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.dellroad</groupId>
+                <artifactId>dellroad-dependencies</artifactId>
+                <version>${dellroad-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-bom</artifactId>
@@ -173,29 +222,12 @@
 
     <build>
 
-        <!-- Start jetty by default (make sure you run "mvn package" first!) -->
-        <defaultGoal>jetty:run</defaultGoal>
-
         <plugins>
-
-            <!-- Jetty -->
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty-maven-plugin.version}</version>
-                 <configuration>
-                    <httpConnector>
-                        <host>localhost</host>
-                        <port>${jetty.http.port}</port>
-                    </httpConnector>
-                </configuration>
-            </plugin>
 
             <!-- Maven enforcer -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven-enforcer-plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.codehaus.mojo</groupId>
@@ -215,12 +247,13 @@
 
                                 <!-- Enforce Java version -->
                                 <requireJavaVersion>
-                                    <version>[${jdk.version},)</version>
+                                    <version>[${java.version},)</version>
+                                    <display>false</display>
                                 </requireJavaVersion>
 
                                 <!-- Enforce maximum bytecode version among dependencies -->
                                 <enforceBytecodeVersion>
-                                    <maxJdkVersion>${jdk.version}</maxJdkVersion>
+                                    <maxJdkVersion>${java.version}</maxJdkVersion>
                                 </enforceBytecodeVersion>
 
                                 <!-- Enforce Maven version 3.6.3 or better -->
@@ -255,23 +288,45 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <propertiesEncoding>${project.build.sourceEncoding}</propertiesEncoding>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                            <delimiters>
+                                <delimiter>${*}</delimiter>
+                            </delimiters>
+                            <escapeString>\</escapeString>
+                            <!--
+                                Why this causes a warning:
+                                https://github.com/jhipster/generator-jhipster/issues/22487#issuecomment-1773449062
+                            -->
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Compile -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                    <release>${jdk.version}</release>
+                    <release>${java.version}</release>
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
                         <arg>-Xlint:all,-processing,-path</arg>
                         <arg>-Werror</arg>
-                        <arg>-AaddSuppressWarningsAnnotation=true</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -291,43 +346,31 @@
                 <executions>
                     <execution>
                         <id>compile_and_weave_aspects</id>
+                        <phase>process-classes</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <complianceLevel>${jdk.version}</complianceLevel>
-                            <source>${jdk.version}</source>
-                            <target>${jdk.version}</target>
-                            <showWeaveInfo>false</showWeaveInfo>
+                            <complianceLevel>${java.version}</complianceLevel>
+                            <source>${java.version}</source>
+                            <target>${java.version}</target>
                             <proc>none</proc><!-- https://stackoverflow.com/questions/28022190 -->
                             <weaveDirectories>
-                                <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
+                                <weaveDirectory>${project.build.directory}/classes</weaveDirectory><!-- weave classes as well -->
                             </weaveDirectories>
                             <aspectLibraries>
                                 <aspectLibrary>
                                     <groupId>org.springframework</groupId>
                                     <artifactId>spring-aspects</artifactId>
                                 </aspectLibrary>
-                            <!-- Include this if you want to use @RetryTransaction
                                 <aspectLibrary>
                                     <groupId>org.dellroad</groupId>
                                     <artifactId>dellroad-stuff-spring</artifactId>
                                 </aspectLibrary>
-                            -->
                             </aspectLibraries>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!-- WAR -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-war-plugin.version}</version>
-                <configuration>
-                    <packagingExcludes>WEB-INF/classes/builddef.lst</packagingExcludes> <!-- Leftover from aspectj compile -->
-                </configuration>
             </plugin>
 
             <!-- Vaadin plugin -->
@@ -338,10 +381,47 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>prepare-frontend</goal>
                             <goal>build-frontend</goal>
                         </goals>
                         <phase>compile</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <forceProductionBuild>true</forceProductionBuild>
+                    <optimizeBundle>false</optimizeBundle>
+                </configuration>
+            </plugin>
+
+            <!-- Build executable JAR with dependencies in lib/ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>vaadinbug.VaadinBug</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Actually put the dependencies in lib/ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>arrange_dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -351,18 +431,24 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven-checkstyle-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                      <!-- Fix for java.lang.NoSuchMethodError: 'com.google.common.collect.ImmutableMap' -->
+                      <groupId>com.google.guava</groupId>
+                      <artifactId>guava</artifactId>
+                      <version>${guava.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
-                        <id>checkstyle_verify</id>
-                        <phase>compile</phase>
+                        <id>default-verify</id>
+                        <phase>verify</phase>
                         <configuration>
-                            <consoleOutput>true</consoleOutput>
-                            <encoding>UTF-8</encoding>
-                            <failsOnError>true</failsOnError>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                            <linkXRef>false</linkXRef>
+                            <failOnViolation>true</failOnViolation>
                             <includeResources>false</includeResources>
                             <includeTestResources>false</includeTestResources>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <excludeGeneratedSources>true</excludeGeneratedSources>
                             <sourceDirectories>
                                 <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                                 <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
@@ -375,6 +461,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 </project>

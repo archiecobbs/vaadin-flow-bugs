@@ -1,12 +1,18 @@
-.npmrc
-frontend/generated/
+/target/
+.DS_Store
+/*.patch
+/*.patch.gz
+/xx.java
+/xx*.class
+
+# Keep this synchronized with cleanup-vaadin.sh
 frontend/index.html
-node_modules/
+package-lock.json
 package.json
-pnpm-lock.yaml
-pnpmfile.js
-target/
 tsconfig.json
 types.d.ts
 vite.config.ts
 vite.generated.ts
+frontend/generated/
+node_modules/
+src/main/bundles/

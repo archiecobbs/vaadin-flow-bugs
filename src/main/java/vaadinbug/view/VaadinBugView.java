@@ -3,9 +3,11 @@
  * Copyright (C) 2022 Archie L. Cobbs. All rights reserved.
  */
 
-package vaadinbug;
+package vaadinbug.view;
 
 import com.google.common.base.Preconditions;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.Shortcuts;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -18,7 +20,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.dom.ElementConstants;
@@ -33,7 +34,6 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import vaadinbug.field.VehicleField;
 import vaadinbug.model.Contract;
 
 @PreserveOnRefresh
@@ -43,7 +43,6 @@ public class VaadinBugView extends VerticalLayout {
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private BeanValidationBinder<Contract> binder;
     private Notification errorNotification;
 
     public VaadinBugView() {
@@ -52,29 +51,22 @@ public class VaadinBugView extends VerticalLayout {
         this.add(new Text("Vaadin Bug Demo"));
 
         // Configure fields
-        final TextField nameField = new TextField();
-        nameField.setPlaceholder("Name...");
-        nameField.setMaxLength(Contract.NAME_MAX_LENGTH);
-        nameField.setPattern(Contract.NAME_PATTERN);
-        nameField.setRequired(true);
-        nameField.setRequiredIndicatorVisible(true);
-
-        final VehicleField vehicleField = new VehicleField();
-
-        // Setup binder
-        this.binder = new BeanValidationBinder<>(Contract.class);
-        this.binder.forField(nameField)
-          .withNullRepresentation("")
-          .bind("name");
-        this.binder.forField(vehicleField)
-          .withValidator(vehicleField::validate)
-          .bind("vehicle");
+        final TextField firstNameField = new TextField();
+        firstNameField.setMaxLength(Contract.NAME_MAX_LENGTH);
+        firstNameField.setPattern(Contract.NAME_PATTERN);
+        firstNameField.setRequired(true);
+        firstNameField.setRequiredIndicatorVisible(true);
+        final TextField lastNameField = new TextField();
+        lastNameField.setMaxLength(Contract.NAME_MAX_LENGTH);
+        lastNameField.setPattern(Contract.NAME_PATTERN);
+        lastNameField.setRequired(true);
+        lastNameField.setRequiredIndicatorVisible(true);
 
         // Build form
         final FormLayout formLayout = new FormLayout();
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("1px", 1, FormLayout.ResponsiveStep.LabelsPosition.ASIDE));
-        formLayout.addFormItem(nameField, "Name");
-        formLayout.addFormItem(vehicleField, "Vehicle");
+        formLayout.addFormItem(firstNameField, "First Name");
+        formLayout.addFormItem(lastNameField, "Last Name");
         this.add(formLayout);
 
         // Add buttons
@@ -82,29 +74,29 @@ public class VaadinBugView extends VerticalLayout {
         buttonLayout.add(new Button("Reset", e -> this.resetForm()));
         buttonLayout.add(new Button("Submit", e -> this.submitForm()));
         this.add(buttonLayout);
+
+        // Add Enter listeners
+        Shortcuts.addShortcutListener(firstNameField,
+          e -> this.info("First name: \"" + firstNameField.getValue() + "\""),
+          Key.ENTER)
+        .listenOn(firstNameField)
+        .resetFocusOnActiveElement();
+
+        Shortcuts.addShortcutListener(lastNameField,
+          e -> this.info("Last name: \"" + lastNameField.getValue() + "\""),
+          Key.ENTER)
+        .listenOn(lastNameField)
+        .resetFocusOnActiveElement();
     }
 
     private void resetForm() {
         this.log.info("VaadinBugView: form reset");
         this.resetErrorNotification();
-        this.binder.readBean(new Contract());
     }
 
     private void submitForm() {
         this.log.info("VaadinBugView: form submitted");
         this.resetErrorNotification();
-        final Contract contract = new Contract();
-        try {
-            this.binder.writeBean(contract);
-        } catch (ValidationException e) {
-            this.log.error("VaadinBugView: validation errors:\n    {}",
-              Stream.of(this.toStrings(e)).collect(Collectors.joining("\n    ")));
-            this.errorNotification = this.notify(NotificationVariant.LUMO_ERROR,
-              Notification.Position.MIDDLE, 0, "Validation Error", this.toStrings(e));
-            return;
-        }
-        this.notify(NotificationVariant.LUMO_SUCCESS, Notification.Position.BOTTOM_END, 3000, "Successful Submission");
-        this.log.info("VaadinBugView: validation successful; result: {}", contract);
     }
 
     private void resetErrorNotification() {
@@ -118,6 +110,10 @@ public class VaadinBugView extends VerticalLayout {
         return e.getValidationErrors().stream()
           .map(ValidationResult::getErrorMessage)
           .toArray(String[]::new);
+    }
+
+    private void info(String message) {
+        this.notify(NotificationVariant.LUMO_CONTRAST, Notification.Position.MIDDLE, 1000, message);
     }
 
     /**
