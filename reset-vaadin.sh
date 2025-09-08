@@ -1,17 +1,16 @@
 #!/bin/bash
 
-set -ex
+# Discard all the cached crap that was downloaded by the vaadin-maven-plugin.
+# Note "package-lock.json" is under source control so any changes will need
+# be committed after you rebuild.
 
-# Keep this synchronized with .gitignore
-rm -f frontend/index.html
-rm -f package-lock.json
-rm -f package.json
-rm -f tsconfig.json
-rm -f types.d.ts
-rm -f vite.config.ts
-rm -f vite.generated.ts
-rm -rf frontend/generated
-rm -rf node_modules
-rm -rf src/main/bundles/
-
-rm -rf target
+rm -rf \
+  frontend \
+  node_modules \
+  package-lock.json \
+  package.json \
+  pnpmfile.js \
+  tsconfig.json \
+  types.d.ts \
+  webpack.config.js \
+  webpack.generated.js
