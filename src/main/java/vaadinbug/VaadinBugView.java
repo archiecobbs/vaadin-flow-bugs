@@ -5,13 +5,13 @@
 
 package vaadinbug;
 
-import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.treegrid.TreeGrid;
-import com.vaadin.flow.data.provider.hierarchy.TreeData;
-import com.vaadin.flow.data.provider.hierarchy.TreeDataProvider;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 
@@ -25,34 +25,39 @@ public class VaadinBugView extends VerticalLayout {
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private final VerticalLayout mainLayout = new VerticalLayout();
+
+    private final Span span = new Span("This is a <span>");
+    private final Button button = new Button("Press Me", e -> this.buttonPressed());
+    private final HorizontalLayout spanAndButtonBar = new HorizontalLayout(this.span, this.button);
+
+    private int numButtonPresses;
+
     public VaadinBugView() {
-
-        // Add title
         this.add(new Text("Vaadin Bug Demo"));
+        this.mainLayout.add(this.spanAndButtonBar);
+        this.add(this.mainLayout);
+    }
 
-        // Build tree data provider
-        final TreeData<String> treeData = new TreeData<>();
-        treeData.addRootItems("AAA", "BBB", "CCC");
-        treeData.addItems("AAA", "1a", "2a", "3a");
-        treeData.addItems("BBB", "1b", "2b", "3b");
-        treeData.addItems("CCC", "1c", "2c", "3c");
-        final TreeDataProvider<String> treeDataProvider = new TreeDataProvider<>(treeData);
+    private void buttonPressed() {
 
-        // Build TreeGrid
-        final TreeGrid<String> treeGrid = new TreeGrid<>();
-        treeGrid.addComponentHierarchyColumn(string -> new Html("<bold>" + string + "</bold>"))
-          .setResizable(true)
-          .setAutoWidth(true);
-        treeGrid.setSelectionMode(Grid.SelectionMode.NONE);
-        treeGrid.setDataProvider(treeDataProvider);
+        this.span.setText("Button has been pressed " + ++this.numButtonPresses + " time(s)");
 
-        // THIS LINE CAUSES THE GRID TO NOT APPEAR
-        treeGrid.setSizeFull();
+        // Get new content
+        final Component content = this.getContent();
 
-        // THIS LINE CAUSES THE GRID TO REAPPEAR
-        this.setSizeFull();
+        // Remove content from parent if already attached to something
+        content.getParent()
+          .filter(HasComponents.class::isInstance)
+          .map(HasComponents.class::cast)
+          .ifPresent(parent -> parent.remove(content));
 
-        // Add TreeGrid
-        this.add(treeGrid);
+        // Add content to main layout
+        this.mainLayout.removeAll();
+        this.mainLayout.add(this.spanAndButtonBar);
+    }
+
+    private Component getContent() {
+        return this.spanAndButtonBar;
     }
 }
