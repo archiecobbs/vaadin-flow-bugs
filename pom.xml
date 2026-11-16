@@ -4,140 +4,109 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.dellroad</groupId>
         <artifactId>dellroad-dependencies</artifactId>
-        <version>3.2.12.0</version>
+        <version>4.1.2.1</version>
     </parent>
-    <artifactId>vaadinbug</artifactId>
+    <artifactId>vbug</artifactId>
+    <name>VBug</name>
     <version>1.0.0</version>
-    <name>Vaadin Bug Demo</name>
     <packaging>war</packaging>
-    <description>Demonstration of Vaadin Bug.</description>
-    <distributionManagement>
-        <site>
-            <id>${project.artifactId}-site</id>
-            <url>file://${project.basedir}/site</url>
-        </site>
-    </distributionManagement>
+    <description>Vaadin Bug Demonstration WebApp</description>
     <properties>
 
         <!-- Basic stuff -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>17</jdk.version>
+        <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
+        <jdk.version>25</jdk.version>
 
-        <!-- Enable to build in production mode -->
-        <!--<vaadin.productionMode>true</vaadin.productionMode>-->
+        <!-- Application properties -->
+        <vbug.log.dir>${user.home}</vbug.log.dir>
+        <rpm.webappdir>${homebrew.prefix}/opt/tomcat/libexec/webapps/webapps</rpm.webappdir>
+        <rpm.warname>ROOT</rpm.warname>
+        <rpm.wardir>${rpm.webappdir}/${rpm.warname}</rpm.wardir>
 
-        <!-- What port to run Jetty on -->
-        <jetty.http.port>8090</jetty.http.port>
+        <!-- Dependency versions not inherited from parent -->
+        <vaadin.version>25.3.5</vaadin.version>
 
-        <!-- Other stuff -->
-        <checkstyle.config.location>src/checkstyle/checkstyle.xml</checkstyle.config.location>
+        <!-- We don't actually use Spring boot, this is only to eliminate warnings during compilation -->
+        <spring-boot.version>4.1.2</spring-boot.version>
 
-        <!-- Dependency versions -->
-        <jetty-maven-plugin.version>11.0.26</jetty-maven-plugin.version>
-        <vaadin-plugin.version>${vaadin.version}</vaadin-plugin.version>
-        <vaadin.version.major>24</vaadin.version.major>
-        <vaadin.version.minor>5</vaadin.version.minor>
-        <vaadin.version.patch>5</vaadin.version.patch>
-        <vaadin.version>${vaadin.version.major}.${vaadin.version.minor}.${vaadin.version.patch}</vaadin.version>
+        <!--
+            ENFORCER VERSION OVERRIDES - These are fixes for the Maven enforcer "Dependency Convergence"
+            and "Require upper bound dependencies" violations.
 
+            SEE ALSO:
+                - Any <excludes> in <requireUpperBoundDeps>
+                - "ENFORCER OVERRIDES" at the bottom of <dependencyManagement>
+        -->
+        <jackson-bom.version>3.1.8</jackson-bom.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
-
-        <!-- Vaadin -->
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-core</artifactId>
-            <exclusions>
-            <!--
-                <exclusion>
-                    <groupId>com.vaadin</groupId>
-                    <artifactId>vaadin-dev-server</artifactId>
-                </exclusion>
-            -->
-                <exclusion>
-                    <groupId>jakarta.validation</groupId>
-                    <artifactId>validation-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    <!--
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>flow-server-production-mode</artifactId>
-        </dependency>
-    -->
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-spring</artifactId>
-        </dependency>
 
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-            <version>${spring-framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>${spring-framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring-framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>${spring-framework.version}</version>
             <exclusions>
+
+                <!-- Conflicts with jcl-over-slf4j -->
                 <exclusion>
-                    <!-- Conflicts with commons-logging dependency of hibernate-validator, httpclient -->
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-jcl</artifactId>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>${spring-framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-            <version>${spring-framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>${spring-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+
+        <!-- Vaadin -->
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>flow-server-production-mode</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-spring</artifactId>
         </dependency>
 
         <!-- Servlet API -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <!--<version>${jakarta.servlet.version}</version>-->
             <scope>provided</scope>
         </dependency>
 
@@ -145,53 +114,103 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
         </dependency>
 
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-reload4j</artifactId>
-            <version>${slf4j.version}</version>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
         </dependency>
 
         <!-- DellRoad Stuff -->
         <dependency>
             <groupId>org.dellroad</groupId>
+            <artifactId>dellroad-stuff-jibx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dellroad</groupId>
             <artifactId>dellroad-stuff-main</artifactId>
-            <version>${dellroad-stuff.version}</version>
         </dependency>
         <dependency>
             <groupId>org.dellroad</groupId>
             <artifactId>dellroad-stuff-spring</artifactId>
-            <version>${dellroad-stuff.version}</version>
         </dependency>
         <dependency>
             <groupId>org.dellroad</groupId>
-            <artifactId>dellroad-stuff-vaadin24</artifactId>
-            <version>${dellroad-stuff.version}</version>
+            <artifactId>dellroad-stuff-pobj</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dellroad</groupId>
+            <artifactId>dellroad-stuff-vaadin25</artifactId>
         </dependency>
 
         <!-- Misc utility -->
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
+            <artifactId>commons-text</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cronutils</groupId>
+            <artifactId>cron-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.permazen</groupId>
+            <artifactId>permazen-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.permazen</groupId>
+            <artifactId>permazen-spring</artifactId>
+        </dependency>
+
+        <!-- AspectJ -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+
+        <!-- Stuff to put on the classpath during compilation to eliminate warnings -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Testing & Debug -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
         </dependency>
 
     </dependencies>
@@ -216,31 +235,42 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <site>
+            <id>${project.artifactId}-site</id>
+            <url>file://${project.basedir}/../site/${project.artifactId}/</url>
+        </site>
+    </distributionManagement>
+
     <build>
 
-        <!-- Start jetty by default (make sure you run "mvn package" first!) -->
-        <defaultGoal>jetty:run</defaultGoal>
+        <!-- Resources -->
+        <resources>
+
+            <!-- First copy all resources without filtering -->
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+
+            <!-- Next copy (and overwrite) certain resources with filtering turned on -->
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j2.xml</include>
+                    <include>vbug.properties</include>
+                </includes>
+            </resource>
+
+        </resources>
 
         <plugins>
 
-            <!-- Jetty -->
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty-maven-plugin.version}</version>
-                 <configuration>
-                    <httpConnector>
-                        <host>localhost</host>
-                        <port>${jetty.http.port}</port>
-                    </httpConnector>
-                </configuration>
-            </plugin>
-
-            <!-- Maven nnforcer -->
+            <!-- Maven enforcer -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven-enforcer-plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.codehaus.mojo</groupId>
@@ -260,7 +290,7 @@
 
                                 <!-- Enforce Java version -->
                                 <requireJavaVersion>
-                                    <version>[${jdk.version},)</version>
+                                    <version>[25,)</version>
                                 </requireJavaVersion>
 
                                 <!-- Enforce maximum bytecode version among dependencies -->
@@ -275,7 +305,7 @@
                                 </requireMavenVersion>
 
                                 <!-- Check for dependency conflicts -->
-                                <!-- <dependencyConvergence/> -->
+                                <dependencyConvergence/>
                                 <banDuplicatePomDependencyVersions/>
 
                                 <!-- Check for same class appearing more than once but not identically -->
@@ -284,9 +314,17 @@
                                     <ignoreWhenIdentical>true</ignoreWhenIdentical>
                                 </banDuplicateClasses>
 
+                                <!-- Require that our dependencies are up to date vs. indirect dependencies -->
+                                <requireUpperBoundDeps>
+                                    <excludes>
+                                <!--
+                                        <exclude>foo.bar:janfu</exclude>
+                                -->
+                                    </excludes>
+                                </requireUpperBoundDeps>
+
                                 <!-- Other rules -->
                                 <reactorModuleConvergence/>
-                                <!-- <requireUpperBoundDeps/> -->
 
                             </rules>
                         </configuration>
@@ -294,18 +332,31 @@
                 </executions>
             </plugin>
 
-            <!-- Resources -->
+            <!-- This assumes MacOS build - the set ${homebrew.prefix} property -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-plugin.version}</version>
+                <groupId>org.dellroad</groupId>
+                <artifactId>dellroad-stuff-maven-plugin</artifactId>
+                <version>${dellroad-stuff.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exec-set-property</goal>
+                        </goals>
+                        <configuration>
+                            <propertyName>homebrew.prefix</propertyName>
+                            <command>brew</command>
+                            <parameters>
+                                <parameter>--prefix</parameter>
+                            </parameters>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Compile -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
@@ -313,8 +364,13 @@
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
                         <arg>-Xlint:all,-processing,-path</arg>
+                    <!--
                         <arg>-Werror</arg>
+                    -->
                         <arg>-AaddSuppressWarningsAnnotation=true</arg>
+                        <arg>-implicit:class</arg>
+                        <arg>-Xmaxerrs</arg>
+                        <arg>10000</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -323,7 +379,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>${aspectj-maven-plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.aspectj</groupId>
@@ -342,6 +397,10 @@
                             <source>${jdk.version}</source>
                             <target>${jdk.version}</target>
                             <showWeaveInfo>false</showWeaveInfo>
+                            <!--
+                                Consider https://github.com/dev-aspectj/aspectj-maven-plugin
+                                <argumentFileDirectory>${project.build.directory}/aspectj-args</argumentFileDirectory>
+                            -->
                             <proc>none</proc><!-- https://stackoverflow.com/questions/28022190 -->
                             <weaveDirectories>
                                 <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
@@ -367,8 +426,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-war-plugin.version}</version>
                 <configuration>
+                    <archiveClasses>false</archiveClasses><!-- This is so any overlay classes have priority -->
                     <packagingExcludes>WEB-INF/classes/builddef.lst</packagingExcludes> <!-- Leftover from aspectj compile -->
                 </configuration>
             </plugin>
@@ -377,7 +436,7 @@
             <plugin>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-maven-plugin</artifactId>
-                <version>${vaadin-plugin.version}</version>
+                <version>${vaadin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -385,6 +444,9 @@
                             <goal>build-frontend</goal>
                         </goals>
                         <phase>compile</phase>
+                        <configuration>
+                            <optimizeBundle>false</optimizeBundle>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -393,7 +455,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>checkstyle_verify</id>
