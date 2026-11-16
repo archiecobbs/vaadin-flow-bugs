@@ -93,8 +93,12 @@ public class WebApplicationConfiguration implements WebApplicationInitializer {
         mainContext.register(ApplicationConfiguration.class);
         this.log.info("the ROOT application context is {}", mainContext);
 
-        // Add startup listener
-        servletContext.addListener(new ContextLoaderListener(mainContext));
+        // Go ahead and start up the main application context - Vaadin requires this
+        mainContext.setServletContext(servletContext);
+        mainContext.refresh();
+
+        // Create the ContextLoaderListener
+        servletContext.addListener(new ContextLoaderListener(mainContext, servletContext));
 
         // Create the ApplicationContext used by the DispatcherServlet as a child of the main ApplicationContext
         final AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
@@ -130,9 +134,5 @@ public class WebApplicationConfiguration implements WebApplicationInitializer {
         // Configure HTTP sessions
         servletContext.setSessionTrackingModes(EnumSet.of(SessionTrackingMode.COOKIE));
         servletContext.setSessionTimeout((int)SESSION_TIMEOUT.toMinutes());
-
-        // Start up main context - WHY? This seems wrong.
-        mainContext.setServletContext(servletContext);
-        mainContext.refresh();
     }
 }
