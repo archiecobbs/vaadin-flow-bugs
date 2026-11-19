@@ -8,9 +8,6 @@ package vaadinbug.context;
 import com.google.common.base.Preconditions;
 import com.vaadin.flow.i18n.DefaultI18NProvider;
 import com.vaadin.flow.i18n.I18NProvider;
-import com.vaadin.flow.spring.VaadinApplicationConfiguration;
-import com.vaadin.flow.spring.VaadinScopesConfig;
-import com.vaadin.flow.spring.VaadinServletConfiguration;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import com.vaadin.flow.spring.annotation.VaadinTaskExecutor;
 
@@ -23,7 +20,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -47,19 +43,12 @@ import vaadinbug.support.LoggingThreadPoolTaskScheduler;
     @ComponentScan.Filter(type = FilterType.REGEX, pattern = "vaadinbug\\.web\\..*"),
 
     // Exclude Vaadin beans that we don't want (bleh)
-    @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.vaadin\\.flow\\.spring\\.security\\..*"),
-    @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.vaadin\\.flow\\.spring\\.SpringBootAutoConfiguration"),
-    @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.vaadin\\.flow\\.spring\\.SpringSecurityAutoConfiguration")
+    @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.vaadin\\.flow\\.spring\\.security\\..*")
   }
 )
 @Configuration
 @EnableSpringConfigured
 @EnableVaadin("vaadinbug.gui")
-@Import({
-  VaadinApplicationConfiguration.class,
-  VaadinScopesConfig.class,
-  VaadinServletConfiguration.class
-})
 @PropertySource("classpath:vbug.properties")
 public class ApplicationConfiguration extends AbstractBean {
 
